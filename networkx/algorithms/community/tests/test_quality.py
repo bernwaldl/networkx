@@ -6,10 +6,11 @@ module.
 import networkx as nx
 from networkx import barbell_graph
 from networkx.algorithms.community import coverage
-from networkx.algorithms.community import modularity
+from networkx.algorithms.community import modularity, old_modularity
 from networkx.algorithms.community import performance
 from networkx.algorithms.community.quality import inter_community_edges
 from networkx.testing import almost_equal
+from timeit import timeit
 
 
 class TestPerformance:
@@ -57,6 +58,9 @@ def test_modularity():
     G = nx.erdos_renyi_graph(n, 0.09, seed=42, directed=True)
     C = [set(range(n // 2)), set(range(n // 2, n))]
     assert almost_equal(0.00017154251389292754, modularity(G, C))
+
+    print(f"Old modularity time: {timeit(lambda: old_modularity(G, C), number=10)}")
+    print(f"New modularity time: {timeit(lambda: modularity(G, C), number=10)}")
 
     G = nx.margulis_gabber_galil_graph(10)
     mid_value = G.number_of_nodes() // 2
